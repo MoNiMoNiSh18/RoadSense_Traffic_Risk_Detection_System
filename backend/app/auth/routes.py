@@ -1,10 +1,12 @@
 from fastapi import APIRouter, HTTPException, Depends
 from app.auth.service import hash_password
-from app.db.database import SessionLocal
-from app.auth.schemas import UserRegister, UserResponse, UserLogin, TokenResponse
+from app.db.database import SessionLocal,get_db
+from app.auth.schemas import UserRegister, UserResponse, UserLogin, TokenResponse,NotificationTokenRequest
 from app.auth.security import verify_password, create_access_token
 from app.db.crud import create_user, get_user_by_email
 from fastapi.security import OAuth2PasswordRequestForm
+from app.auth.dependencies import get_current_user
+from sqlalchemy.orm import Session
 
 router = APIRouter(
     prefix="/api/v1/auth",
@@ -33,6 +35,20 @@ def register(user: UserRegister):
     db.close()
 
     return new_user
+
+@router.post("/notifications/register")
+def register_notification_token(
+    data: NotificationTokenRequest,
+    current_user = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    current_user.fcm_token = data.token
+
+    db.commit()
+
+    return {
+        "message": "Notification device registered successfully"
+    }
 
 @router.post("/login", response_model=TokenResponse)
 def login(
@@ -69,3 +85,4 @@ def login(
         "access_token": access_token,
         "token_type": "bearer"
     }
+

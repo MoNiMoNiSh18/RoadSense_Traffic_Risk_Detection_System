@@ -8,6 +8,7 @@ from app.api.routes.health import router as health_router
 from app.auth.routes import router as auth_router
 from fastapi.middleware.cors import CORSMiddleware
 from app.api.routes.traffic import router as traffic_router
+from app.routers.notifications import router as notifications_router
 
 app = FastAPI(
     title="Traffic Risk Detection System API",
@@ -32,3 +33,4 @@ app.include_router(history_router)
 app.include_router(health_router)
 app.include_router(prediction_router)
 app.include_router(traffic_router)
+app.include_router(notifications_router)

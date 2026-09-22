@@ -21,6 +21,10 @@ Thumbs.db
 # Temporary files
 *.log
 
+# Firebase 
+firebase-service-account.json
+
 # Optional large ML model files
 # Uncomment if needed
 # models/*.pkl
+

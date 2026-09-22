@@ -5,7 +5,13 @@ from fastapi import APIRouter, Depends
 from app.auth.dependencies import get_current_user
 from app.db.database import get_db
 from sqlalchemy.orm import Session
+from app.services.safety_recommendation import (
+    generate_safety_message
+)
 
+from app.services.notification_service import (
+    send_push_notification
+)
 
 router = APIRouter(
     prefix="/api/v1",
