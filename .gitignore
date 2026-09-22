@@ -23,7 +23,7 @@ Thumbs.db
 
 # Firebase 
 firebase-service-account.json
-
+firebase-messaging-sw.js
 # Optional large ML model files
 # Uncomment if needed
 # models/*.pkl
