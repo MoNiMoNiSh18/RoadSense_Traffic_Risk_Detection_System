@@ -10,7 +10,7 @@ function Prediction() {
   const [roadQuality, setRoadQuality] = useState(7);
   const [experience, setExperience] = useState("Intermediate");
   const [stressIndex, setStressIndex] = useState(40);
-
+  const [riskPopup, setRiskPopup] = useState(null);
   const [location, setLocation] = useState(null);
   const [prediction, setPrediction] = useState(null);
   const [error, setError] = useState("");
@@ -85,6 +85,14 @@ function Prediction() {
       const result = await response.json();
 
       setPrediction(result);
+      setRiskPopup({
+  risk: result.predicted_risk,
+  confidence: result.confidence,
+});
+
+setTimeout(() => {
+  setRiskPopup(null);
+}, 6000);
     } catch (error) {
       console.error(error);
       setError(error.message);
@@ -103,8 +111,46 @@ function Prediction() {
 
   return (
     <div>
-      <Navbar />
 
+      <Navbar />
+      {riskPopup && (
+  <div className={`risk-popup ${riskPopup.risk.toLowerCase()}`}>
+    <div className="risk-popup-icon">
+      {riskPopup.risk === "Low"
+        ? "✓"
+        : "⚠"}
+    </div>
+
+    <div className="risk-popup-content">
+      <h3>
+        {riskPopup.risk === "Low"
+          ? "LOW RISK"
+          : riskPopup.risk === "Medium"
+          ? "MEDIUM RISK DETECTED"
+          : "HIGH RISK DETECTED"}
+      </h3>
+
+      <p>
+        Model confidence: {riskPopup.confidence}%
+      </p>
+
+      <span>
+        {riskPopup.risk === "Low"
+          ? "Good job! Continue driving safely and follow traffic rules."
+          : riskPopup.risk === "Medium"
+          ? "Stay alert, reduce speed and avoid sudden manoeuvres."
+          : "Drive with extra caution. Slow down and maintain extra following distance."}
+      </span>
+    </div>
+
+    <button
+      onClick={() => setRiskPopup(null)}
+      className="risk-popup-close"
+    >
+      ×
+    </button>
+  </div>
+)}
       <main className="prediction-page">
         {/* Header */}
         <div className="prediction-header">
